@@ -1,22 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PasarKu Frontend
 
-## Getting Started
+Ini adalah aplikasi frontend PasarKu yang dibangun menggunakan [Next.js](https://nextjs.org) dengan [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-First, run the development server:
+## Cara Menjalankan Aplikasi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Prasyarat
+Pastikan Anda telah menginstall:
+- Node.js (versi 18 atau lebih baru)
+- npm, yarn, pnpm, atau bun
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Langkah-langkah Menjalankan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install Dependencies**
+   ```bash
+   npm install
+   # atau
+   yarn install
+   # atau
+   pnpm install
+   ```
+
+2. **Jalankan Development Server**
+   ```bash
+   npm run dev
+   # atau
+   yarn dev
+   # atau
+   pnpm dev
+   # atau
+   bun dev
+   ```
+
+3. **Buka Browser**
+   Buka [http://localhost:3000](http://localhost:3000) di browser untuk melihat hasilnya.
+
+4. **Mulai Development**
+   Anda dapat mulai mengedit halaman dengan memodifikasi file `app/page.tsx`. Halaman akan ter-update otomatis saat Anda mengedit file.
+
+### Scripts yang Tersedia
+
+- `npm run dev` - Menjalankan development server
+- `npm run build` - Build aplikasi untuk production
+- `npm run start` - Menjalankan production server
+- `npm run lint` - Menjalankan ESLint untuk mengecek kode
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

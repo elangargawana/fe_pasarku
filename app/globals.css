@@ -1,26 +1,78 @@
+/* Design tokens: colors, typography, spacing, radii, shadows */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root{
+	/* Colors */
+	--color-bg: #ffffff;
+	--color-foreground: #171717;
+	--color-surface: #ffffff;
+
+	--green-100: #eafff1;
+	--green-300: #9ff0b9;
+	--green-500: #20c96a;
+	--green-600: #18a75a;
+
+	--muted: #6b7280;
+
+	/* Typography */
+	--font-size-xs: 0.75rem;
+	--font-size-sm: 0.875rem;
+	--font-size-base: 1rem;
+	--font-size-lg: 1.125rem;
+
+	--font-weight-light: 300;
+	--font-weight-regular: 400;
+	--font-weight-semibold: 600;
+
+	/* Radii */
+	--radius-sm: 6px;
+	--radius-md: 12px;
+	--radius-lg: 20px;
+
+	/* Shadows */
+	--shadow-soft: 0 8px 24px rgba(2,6,23,0.06);
+	--shadow-strong: 0 12px 36px rgba(2,6,23,0.08);
+
+	/* Danger / red palette */
+	--danger-100: #ffecec;
+	--danger-300: #ff9b9b;
+	--danger-500: #ff4a4a;
+	--danger-600: #e33a3a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@media (prefers-color-scheme: dark){
+	:root{
+		--color-bg: #0a0a0a;
+		--color-foreground: #ededed;
+		/* keep same greens but could be tuned for dark */
+	}
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Helper aliases used by the app */
+:root{
+	--background: var(--color-bg);
+	--foreground: var(--color-foreground);
+	--color-card-bg: rgba(255,255,255,0.95);
+	--color-text-muted: var(--muted);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+body{
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
+
+/* Logout button styles (used in Sidenav) */
+.btn-logout{
+	background: linear-gradient(90deg, var(--danger-500), var(--danger-600));
+	color: white;
+	transition: filter 150ms ease, transform 150ms ease;
+}
+.btn-logout:hover{
+	filter: brightness(0.9);
+	transform: translateY(-1px);
+}
+.btn-logout:active{
+	transform: translateY(0);
+}
+
