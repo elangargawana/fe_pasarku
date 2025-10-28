@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import { useUiStore } from "../../stores/ui";
 
 type AdminNavItem = { label: string; href: string; icon?: React.ReactNode };
 
@@ -37,8 +38,8 @@ export const defaultAdminNav: AdminNavItem[] = [
     ),
   },
   {
-    label: "Supply Logging",
-    href: "/admin/supply-logging",
+    label: "Pencatatan Pasokan",
+    href: "/admin/pencatatan-pasokan",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
     ),
@@ -76,22 +77,20 @@ export const defaultAdminNav: AdminNavItem[] = [
 export default function Sidenav({
   title = "Pasar Johar",
   role = "Pengelola Pasar",
-  mobileOpen = false,
-  onCloseMobile,
   items = defaultAdminNav,
   logo,
   onLogout,
 }: {
   title?: string;
   role?: string;
-  mobileOpen?: boolean;
-  onCloseMobile?: () => void;
   items?: AdminNavItem[];
   logo?: React.ReactNode;
   onLogout?: () => void;
 }) {
   const pathname = usePathname() || "/admin/dashboard";
   const router = useRouter();
+  const mobileOpen = useUiStore((s: any) => s.mobileOpen);
+  const setMobileOpen = useUiStore((s: any) => s.setMobileOpen);
   const [showLogout, setShowLogout] = React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
 
@@ -127,19 +126,19 @@ export default function Sidenav({
     }
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && mobileOpen) onCloseMobile?.();
+      if (e.key === 'Escape' && mobileOpen) setMobileOpen(false);
     };
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [mobileOpen, onCloseMobile]);
+  }, [mobileOpen, setMobileOpen]);
 
   return (
     <>
-    {/* Desktop sidebar (visible on large screens only) */}
-  <aside className="hidden lg:flex w-64 bg-white h-screen fixed left-0 top-0 bottom-0 flex-col shadow-sm z-20">
+      {/* Desktop sidebar (visible on large screens only) */}
+      <aside className="hidden lg:flex w-64 bg-white h-screen fixed left-0 top-0 bottom-0 flex-col shadow-sm z-20">
         <div className="p-6 text-center border-b border-gray-100">
           {/* temp logo: use an inline vercel-like triangle SVG colored green */}
           <div className="mx-auto w-20 h-20 mb-3 flex items-center justify-center">
@@ -158,12 +157,12 @@ export default function Sidenav({
               return (
                 <li key={item.href}>
                   <Link href={item.href} className={`flex items-center gap-3 px-4 py-2 rounded-lg ${active ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-50'}`}>
-                    <span className={`w-8 h-8 rounded-md flex items-center justify-center ${active ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
+                    <span className={`w-8 h-8 flex-shrink-0 rounded-md flex items-center justify-center ${active ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                       {item.icon ?? (
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       )}
                     </span>
-                    <span className="font-medium">{item.label}</span>
+                    <span className="text-md font-medium">{item.label}</span>
                   </Link>
                 </li>
               );
@@ -174,7 +173,7 @@ export default function Sidenav({
         <div className="border-t border-gray-100 p-4">
           <button
             onClick={() => {
-              onCloseMobile?.();
+              setMobileOpen(false);
               if (onLogout) return onLogout();
               openLogout();
             }}
@@ -190,15 +189,15 @@ export default function Sidenav({
         className={`fixed inset-0 z-40 lg:hidden transition-opacity ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         aria-hidden={!mobileOpen}
       >
-        <div className={`absolute inset-0 bg-black/40`} onClick={onCloseMobile} />
+        <div className={`absolute inset-0 bg-black/40`} onClick={() => setMobileOpen(false)} />
 
-  <aside className={`absolute left-0 top-0 bottom-0 w-72 bg-white shadow-lg transform transition-transform flex flex-col h-full ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <aside className={`absolute left-0 top-0 bottom-0 w-72 bg-white shadow-lg transform transition-transform flex flex-col h-full ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-4 flex items-center justify-between border-b border-gray-100">
             <div>
               <div className="font-semibold">{title}</div>
               <div className="text-xs text-gray-500">Role: {role}</div>
             </div>
-            <button onClick={onCloseMobile} className="p-2 rounded-md">
+            <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
           </div>
@@ -209,11 +208,11 @@ export default function Sidenav({
                 const active = pathname === item.href;
                 return (
                   <li key={item.href}>
-                    <Link href={item.href} onClick={onCloseMobile} className={`flex items-center gap-3 px-4 py-3 rounded-lg ${active ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-50'}`}>
+                    <Link href={item.href} onClick={() => setMobileOpen(false)} className={`flex items-center gap-3 px-4 py-3 rounded-lg min-w-0 ${active ? 'bg-green-50 text-green-600' : 'text-gray-700 hover:bg-gray-50'}`}>
                       <span className={`w-8 h-8 rounded-md flex items-center justify-center ${active ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                         {item.icon}
                       </span>
-                      <span className="font-medium">{item.label}</span>
+                      <span className="text-sm font-medium truncate">{item.label}</span>
                     </Link>
                   </li>
                 );
@@ -224,7 +223,7 @@ export default function Sidenav({
           <div className="border-t border-gray-100 p-4">
             <button
               onClick={() => {
-                onCloseMobile?.();
+                setMobileOpen(false);
                 if (onLogout) return onLogout();
                 openLogout();
               }}
@@ -235,7 +234,7 @@ export default function Sidenav({
           </div>
         </aside>
       </div>
-      
+
       <ConfirmDialog
         open={showLogout}
         title="Konfirmasi Logout"

@@ -14,6 +14,7 @@ type Props<T> = {
   data: T[];
   gridTemplate?: string;
   initialPageSize?: number;
+  hidePagination?: boolean;
 };
 
 export default function ReusableTable<T extends object>({
@@ -21,6 +22,7 @@ export default function ReusableTable<T extends object>({
   data,
   gridTemplate = "72px 1fr 120px 160px 120px 260px",
   initialPageSize = 5,
+  hidePagination = false,
 }: Props<T>) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -97,78 +99,80 @@ export default function ReusableTable<T extends object>({
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-4 px-4 py-3 bg-green-50 flex flex-col sm:flex-row items-center sm:justify-between text-sm text-gray-600 gap-3">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="whitespace-nowrap">Item Perhalaman</div>
-          <select
-            aria-label="Items per page"
-            value={pageSize}
-            onChange={(e) => table.setPageSize(Number(e.target.value))}
-            className="rounded-full border px-3 py-1 bg-white text-sm"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
-          </select>
-          <div className="whitespace-nowrap">
-            {start}-{end} Of {total}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => table.setPageIndex(Math.max(0, pageIndex - 1))}
-            disabled={pageIndex === 0}
-            className="p-2 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          >
-            ←
-          </button>
-
-          <div className="flex items-center gap-2 sm:hidden text-sm">
-            <div className="font-medium">{pageIndex + 1}</div>
-            <div className="text-gray-400">/</div>
-            <div className="text-gray-600">
-              {Math.max(1, Math.ceil(total / pageSize))}
+      {/* Pagination (optional) */}
+      {!hidePagination && (
+        <div className="mt-4 px-4 py-3 bg-green-50 flex flex-col sm:flex-row items-center sm:justify-between text-sm text-gray-600 gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="whitespace-nowrap">Item Perhalaman</div>
+            <select
+              aria-label="Items per page"
+              value={pageSize}
+              onChange={(e) => table.setPageSize(Number(e.target.value))}
+              className="rounded-full border px-3 py-1 bg-white text-sm"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+            </select>
+            <div className="whitespace-nowrap">
+              {start}-{end} Of {total}
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2">
-            {Array.from({ length: Math.max(1, Math.ceil(total / pageSize)) }).map(
-              (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => table.setPageIndex(i)}
-                  aria-current={i === pageIndex ? "page" : undefined}
-                  className={`px-2 py-1 rounded ${
-                    i === pageIndex
-                      ? "text-green-600 border-b-2 border-green-600"
-                      : "text-gray-700 hover:text-green-600"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              )
-            )}
-          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => table.setPageIndex(Math.max(0, pageIndex - 1))}
+              disabled={pageIndex === 0}
+              className="p-2 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40"
+            >
+              ←
+            </button>
 
-          <button
-            onClick={() =>
-              table.setPageIndex(
-                Math.min(
-                  Math.max(0, Math.ceil(total / pageSize) - 1),
-                  pageIndex + 1
+            <div className="flex items-center gap-2 sm:hidden text-sm">
+              <div className="font-medium">{pageIndex + 1}</div>
+              <div className="text-gray-400">/</div>
+              <div className="text-gray-600">
+                {Math.max(1, Math.ceil(total / pageSize))}
+              </div>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-2">
+              {Array.from({ length: Math.max(1, Math.ceil(total / pageSize)) }).map(
+                (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => table.setPageIndex(i)}
+                    aria-current={i === pageIndex ? "page" : undefined}
+                    className={`px-2 py-1 rounded ${
+                      i === pageIndex
+                        ? "text-green-600 border-b-2 border-green-600"
+                        : "text-gray-700 hover:text-green-600"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
                 )
-              )
-            }
-            disabled={pageIndex >= Math.ceil(total / pageSize) - 1}
-            className="p-2 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40"
-          >
-            →
-          </button>
+              )}
+            </div>
+
+            <button
+              onClick={() =>
+                table.setPageIndex(
+                  Math.min(
+                    Math.max(0, Math.ceil(total / pageSize) - 1),
+                    pageIndex + 1
+                  )
+                )
+              }
+              disabled={pageIndex >= Math.ceil(total / pageSize) - 1}
+              className="p-2 rounded-md text-gray-700 hover:bg-gray-100 disabled:opacity-40"
+            >
+              →
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

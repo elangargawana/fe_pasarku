@@ -10,6 +10,9 @@ type ConfirmDialogProps = {
   cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  // optional class overrides for the action buttons
+  confirmClassName?: string;
+  cancelClassName?: string;
 };
 
 export default function ConfirmDialog({
@@ -20,6 +23,8 @@ export default function ConfirmDialog({
   cancelLabel = "Cancel",
   onConfirm,
   onCancel,
+  confirmClassName,
+  cancelClassName,
 }: ConfirmDialogProps) {
   const [visible, setVisible] = React.useState(false);
   const [animate, setAnimate] = React.useState(false);
@@ -45,7 +50,7 @@ export default function ConfirmDialog({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ease-out ${
+      className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0 transition-opacity duration-200 ease-out ${
         animate ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -59,14 +64,15 @@ export default function ConfirmDialog({
 
       {/* Modal box */}
       <div
-        className={`bg-white rounded-lg p-6 shadow-lg z-10 max-w-sm w-full transform transition-all duration-200 ease-out ${
+        className={`bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 shadow-lg z-10 max-w-sm w-full sm:w-auto transform transition-all duration-200 ease-out ${
           animate
             ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 -translate-y-4 scale-95"
+            : "opacity-0 translate-y-6 sm:-translate-y-4 scale-95"
         }`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        style={{ maxHeight: 'calc(100vh - 4rem)', overflow: 'auto' }}
       >
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         {description && (
@@ -75,13 +81,13 @@ export default function ConfirmDialog({
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transform transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-green-300"
+            className={cancelClassName ?? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transform transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-green-300"}
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded-md border border-red-600 text-red-600 hover:bg-red-50 transform transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-red-300"
+            className={confirmClassName ?? "px-4 py-2 rounded-md border border-red-600 text-red-600 hover:bg-red-50 transform transition hover:scale-105 focus-visible:ring-2 focus-visible:ring-red-300"}
           >
             {confirmLabel}
           </button>

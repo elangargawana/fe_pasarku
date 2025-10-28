@@ -3,19 +3,21 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { defaultAdminNav } from "./Sidenav";
+import { useUiStore } from "../../stores/ui";
 
-export default function Topnav({ title, breadcrumb, onOpenMobile }: { title?: string; breadcrumb?: string[]; onOpenMobile?: () => void }) {
+export default function Topnav({ title, breadcrumb, onOpenMobile }: { title?: string; breadcrumb?: string[]; onOpenMobile?: (() => void) | undefined }) {
   // derive title from current path if not explicitly provided
   const pathname = usePathname() || "/admin/dashboard";
   const matched = defaultAdminNav.find((it) => pathname === it.href || pathname.startsWith(it.href));
   const effectiveTitle = title ?? matched?.label ?? "Dashboard";
   const effectiveBreadcrumb = breadcrumb ?? ["Home", effectiveTitle];
+  const setMobileOpen = useUiStore((s) => s.setMobileOpen);
   return (
     <header className="bg-white border-b border-gray-200 fixed left-0 lg:left-64 right-0 top-0 z-30">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* mobile & tablet hamburger */}
-          <button onClick={onOpenMobile} className="p-2 rounded-md lg:hidden mr-2" aria-label="Open menu">
+          <button onClick={() => { setMobileOpen(true); if (onOpenMobile) onOpenMobile(); }} className="p-2 rounded-md lg:hidden mr-2" aria-label="Open menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-700"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
 
