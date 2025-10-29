@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Image from "next/image";
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import ReusableTable from "../../ui/ReusableTable";
-import Button from "../../ui/Button";
+import Button from "../../ui/button/Button";
 
 type ApprovalRow = {
   id: string | number;
@@ -22,16 +23,15 @@ const defaultRows: ApprovalRow[] = Array.from({ length: 5 }).map((_, i) => ({
 }));
 
 export default function ApprovalTable({ rows = defaultRows }: { rows?: ApprovalRow[] }) {
-  const columnHelper = createColumnHelper<ApprovalRow>();
+  const columnHelper = useMemo(() => createColumnHelper<ApprovalRow>(), []);
 
-  const columns: ColumnDef<ApprovalRow, any>[] = useMemo(
+  const columns = useMemo(
     () => [
       columnHelper.display({
         id: "photo",
         header: "Foto",
-        cell: (ctx: any) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={String(ctx.row.original.photo)} alt={String(ctx.row.original.name)} className="w-12 h-12 rounded-md object-cover" />
+        cell: (ctx) => (
+          <Image src={String(ctx.row.original.photo) ?? '/file.svg'} alt={String(ctx.row.original.name)} width={48} height={48} className="w-12 h-12 rounded-md object-cover" />
         ),
       }),
 
@@ -59,7 +59,7 @@ export default function ApprovalTable({ rows = defaultRows }: { rows?: ApprovalR
       columnHelper.display({
         id: "actions",
         header: "Aksi",
-        cell: (ctx: any) => (
+        cell: (ctx) => (
           <div className="flex items-center justify-center gap-3">
             <Button
               variant="success"
@@ -86,7 +86,7 @@ export default function ApprovalTable({ rows = defaultRows }: { rows?: ApprovalR
         ),
       }),
     ],
-    []
+    [columnHelper]
   );
 
   return <ReusableTable columns={columns} data={rows} gridTemplate="72px 1fr 120px 160px 120px 260px" initialPageSize={5} />;

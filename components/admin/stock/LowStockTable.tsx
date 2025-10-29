@@ -20,9 +20,9 @@ const defaultRows: Row[] = [
 ];
 
 export default function LowStockTable({ rows = defaultRows }: { rows?: Row[] }) {
-  const columnHelper = createColumnHelper<Row>();
+  const columnHelper = useMemo(() => createColumnHelper<Row>(), []);
 
-  const columns: ColumnDef<Row, any>[] = useMemo(
+  const columns = useMemo(
     () => [
       columnHelper.accessor("productName", {
         header: "Produk",
@@ -45,7 +45,7 @@ export default function LowStockTable({ rows = defaultRows }: { rows?: Row[] }) 
       columnHelper.display({
         id: "actions",
         header: "Aksi",
-        cell: (ctx: any) => (
+        cell: (ctx) => (
           <div className="flex items-center justify-center">
             <button onClick={() => alert(`Hubungi ${ctx.row.original.merchant}`)} className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-full px-3 py-2 text-sm">
               Hubungi Pedagang
@@ -54,7 +54,7 @@ export default function LowStockTable({ rows = defaultRows }: { rows?: Row[] }) 
         ),
       }),
     ],
-    []
+    [columnHelper]
   );
 
   // grid template: product (photo + name), merchant, stock, status, actions

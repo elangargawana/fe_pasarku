@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Image from "next/image";
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import ReusableTable from "../../ui/ReusableTable";
 
@@ -20,17 +21,17 @@ const defaultRows: Activity[] = [
 ];
 
 export default function ActivitiesTable({ rows = defaultRows }: { rows?: Activity[] }) {
-  const columnHelper = createColumnHelper<Activity>();
+  const columnHelper = useMemo(() => createColumnHelper<Activity>(), []);
 
-  const columns: ColumnDef<Activity, any>[] = useMemo(
+  const columns = useMemo(
     () => [
       columnHelper.display({
         id: "name",
         header: "Aktivitas",
-        cell: (ctx: any) => (
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={ctx.row.original.icon} alt="icon" className="w-6 h-6" />
+        meta: { align: "start" },
+        cell: (ctx) => (
+          <div className="flex items-start gap-3">
+            <Image src={ctx.row.original.icon ?? '/file.svg'} alt="icon" width={24} height={24} className="w-6 h-6" />
             <div className="text-sm text-gray-800">{ctx.row.original.text}</div>
           </div>
         ),
@@ -38,7 +39,7 @@ export default function ActivitiesTable({ rows = defaultRows }: { rows?: Activit
 
       columnHelper.accessor("time", { header: "Waktu", cell: (info) => <div className="text-sm text-gray-600 text-right">{info.getValue()}</div> }),
     ],
-    []
+    [columnHelper]
   );
 
   const gridTemplate = "1fr 180px";

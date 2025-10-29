@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Button from "../../ui/Button";
+import Image from "next/image";
+import Button from "../../ui/button/Button";
 import ReusableTable from "../../ui/ReusableTable";
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import {
@@ -115,7 +116,7 @@ function PerformancePanel() {
                 barCategoryGap={isSmall ? '20%' : '10%'}
               >
                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.45} />
-                <XAxis dataKey="day" tick={{ fill: '#374151', fontSize: isSmall ? 11 : 13 }} tickFormatter={(value: any) => (isSmall ? (shortDay[value as string] ?? value) : value)} />
+                <XAxis dataKey="day" tick={{ fill: '#374151', fontSize: isSmall ? 11 : 13 }} tickFormatter={(value: string | number) => String(isSmall ? (shortDay[String(value)] ?? value) : value)} />
                 <YAxis tick={{ fill: '#374151', fontSize: isSmall ? 11 : 13 }} />
                 <Tooltip />
 
@@ -135,7 +136,7 @@ function PerformancePanel() {
 }
 
 type Props = {
-  data?: any;
+  data?: { photo?: string; nama?: string; reviews?: unknown };
   onClose?: () => void;
 };
 
@@ -193,7 +194,7 @@ export default function ActiveDetail({ data, onClose }: Props) {
                 <div className="flex flex-col sm:flex-row items-start gap-6">
                   <div className="shrink-0">
                     {/* smaller avatar on mobile, normal on sm+ */}
-                    <img src="/file.svg" alt="foto pedagang" className="w-20 h-20 sm:w-28 sm:h-28 rounded-md object-cover" />
+                    <Image src={data?.photo ?? '/file.svg'} alt={data?.nama ?? 'foto pedagang'} width={112} height={112} className="w-20 h-20 sm:w-28 sm:h-28 rounded-md object-cover" />
                   </div>
 
                   <div className="flex-1 w-full">
@@ -251,7 +252,7 @@ export default function ActiveDetail({ data, onClose }: Props) {
                       <div className="w-full sm:w-36 text-sm text-gray-500">{d.label}</div>
 
                       <div className="w-full sm:w-40 h-40 sm:h-24 rounded-md overflow-hidden border relative">
-                        <img src={d.img} alt={d.label} className="w-full h-full object-cover" />
+                        <Image src={d.img} alt={d.label} width={160} height={160} className="w-full h-full object-cover" />
 
                         {/* centered view icon overlay (placeholder for full-view action) */}
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -294,7 +295,7 @@ export default function ActiveDetail({ data, onClose }: Props) {
             ];
 
             const columnHelper = createColumnHelper<Prod>();
-            const columns: ColumnDef<Prod, any>[] = [
+            const columns = [
               columnHelper.accessor('komoditas', { header: 'Komoditas', cell: info => <div className="text-sm text-slate-700">{info.getValue()}</div> }),
               columnHelper.accessor('harga', { header: 'Harga', cell: info => <div className="text-sm text-slate-700">{info.getValue()}</div> }),
               columnHelper.accessor('stok', { header: 'Stok', cell: info => <div className="text-sm text-slate-700">{info.getValue()}</div> }),
@@ -330,10 +331,10 @@ export default function ActiveDetail({ data, onClose }: Props) {
               { namaProduk: 'Sawi', rating: 5, komentar: 'Pengiriman cepat, bagus' },
             ];
 
-            const reviews: Review[] = (data?.reviews ?? sampleReviews).slice(0, 5);
+            const reviews: Review[] = ((data?.reviews as Review[]) ?? sampleReviews).slice(0, 5);
 
             const columnHelper = createColumnHelper<Review>();
-            const columns: ColumnDef<Review, any>[] = [
+            const columns = [
               columnHelper.accessor('namaProduk', {
                 header: 'Nama Produk',
                 cell: info => <div className="text-sm text-slate-700">{info.getValue()}</div>,

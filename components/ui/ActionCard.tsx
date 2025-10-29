@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 type Props = {
   title: string;
@@ -17,8 +18,7 @@ export default function ActionCard({ title, icon, badge, onClick }: Props) {
       className="relative w-full bg-green-50 border border-green-300 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 transform transition duration-150 hover:scale-[1.02] hover:shadow-lg hover:bg-green-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
     >
       {icon ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={icon} alt={title} className="w-24 h-24 sm:w-20 sm:h-20 object-contain" />
+        <Image src={icon} alt={title} width={96} height={96} className="w-24 h-24 sm:w-20 sm:h-20 object-contain" />
       ) : (
         <div className="w-24 h-24 sm:w-20 sm:h-20 rounded-full bg-white/50" />
       )}

@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import SearchInput from "../../../components/ui/SearchInput";
+import SearchInput from "../../../components/ui/input_fields/SearchInput";
 import Select from "../../../components/ui/Select";
-import ApprovalCardPedagang from '../../../components/admin/approvalspedagang/ApprovalCardPedagang';
+import Button from "../../../components/ui/button/Button";
+import ApprovalCardPedagang from '../../../components/admin/approvals_pedagang/ApprovalCardPedagang';
 
 export default function PedagangPage() {
 	const [query, setQuery] = React.useState("");
@@ -49,10 +50,10 @@ export default function PedagangPage() {
 							</button>
 
 							{/* Add: full-width on mobile, large pill on tablet/desktop */}
-							<button className="w-full sm:w-auto px-4 py-3 rounded-full bg-green-600 text-white text-sm flex items-center gap-2 justify-center hover:bg-green-700 transition shadow sm:min-w-40">
+							<Button variant="primary" className="w-full sm:w-auto px-4 py-3 rounded-full text-sm flex items-center gap-2 justify-center sm:min-w-40">
 								<svg className="w-4 h-4 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
 								<span className="leading-tight">Tambah Pedagang Manual</span>
-							</button>
+							</Button>
 						</div>
 					</div>
 				</div>

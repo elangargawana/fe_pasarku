@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import Button from "../../ui/Button";
+import Image from "next/image";
+import Button from "../../ui/button/Button";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 
 type Props = {
-  data?: any;
+  data?: { photo?: string; name?: string; phone?: string; email?: string; address?: string; toko?: string; kios?: string; kategori?: string; joinedAt?: string };
   onClose?: () => void;
 };
 
@@ -53,7 +54,7 @@ export default function PendingDetail({ data, onClose }: Props) {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="shrink-0">
-              <img src={data?.photo ?? '/file.svg'} alt="foto pedagang" className="w-28 h-28 rounded-md object-cover" />
+              <Image src={data?.photo ?? '/file.svg'} alt="foto pedagang" width={112} height={112} className="w-28 h-28 rounded-md object-cover" />
             </div>
 
             <div className="flex-1 w-full">
@@ -104,7 +105,7 @@ export default function PendingDetail({ data, onClose }: Props) {
               <div key={d.label} className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="w-36 text-sm text-gray-500">{d.label}</div>
                 <div className="w-40 h-24 rounded-md overflow-hidden border relative">
-                  <img src={d.img} alt={d.label} className="w-full h-full object-cover" />
+                  <Image src={d.img} alt={d.label} width={160} height={96} className="w-full h-full object-cover" />
 
                   {/* centered view icon overlay (placeholder for full-view action) */}
                   <div className="absolute inset-0 flex items-center justify-center">

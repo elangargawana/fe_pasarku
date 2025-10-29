@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import Button from "./ui/Button";
+import Button from "./ui/button/Button";
 
 export default function Headbar() {
 	const router = useRouter();

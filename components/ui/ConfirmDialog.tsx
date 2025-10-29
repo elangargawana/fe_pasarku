@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import TransitionModal from "@/components/ui/TransitionModal";
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -49,35 +50,16 @@ export default function ConfirmDialog({
   if (!visible) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0 transition-opacity duration-200 ease-out ${
-        animate ? "opacity-100" : "opacity-0"
-      }`}
+    <TransitionModal
+      show={animate}
+      onClose={onCancel}
+      // center modal vertically and horizontally on all screens
+      wrapperClassName={"p-4 sm:p-0 items-center justify-center"}
+      panelClassName={"bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 shadow-lg z-10 max-w-sm w-full sm:w-auto"}
     >
-      {/* Overlay */}
-      <div
-        className={`absolute inset-0 bg-black/40 transition-opacity duration-200 ease-out ${
-          animate ? "opacity-100" : "opacity-0"
-        }`}
-        onClick={onCancel}
-      />
-
-      {/* Modal box */}
-      <div
-        className={`bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 shadow-lg z-10 max-w-sm w-full sm:w-auto transform transition-all duration-200 ease-out ${
-          animate
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-6 sm:-translate-y-4 scale-95"
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        style={{ maxHeight: 'calc(100vh - 4rem)', overflow: 'auto' }}
-      >
+  <div role="dialog" aria-modal="true" aria-label={title} style={{ maxHeight: 'calc(100vh - 4rem)', overflow: 'visible' }}>
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        {description && (
-          <p className="text-sm text-gray-600 mb-4">{description}</p>
-        )}
+        {description && <p className="text-sm text-gray-600 mb-4">{description}</p>}
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
@@ -93,6 +75,6 @@ export default function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </TransitionModal>
   );
 }

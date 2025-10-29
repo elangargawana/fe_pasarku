@@ -1,8 +1,7 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
-import Button from './Button';
+import Button from './button/Button';
+import ProgressPill from './ProgressPill';
 
 type Pill = { label: string; tone?: 'default' | 'muted' };
 
@@ -18,6 +17,10 @@ type StatCardProps = {
 	/** optional named icon key to render (safer to pass from server components) */
 	iconName?: 'users' | 'products' | 'transactions' | 'supply';
 	className?: string;
+	/** show or hide the CTA button */
+	showCta?: boolean;
+	/** optional percent to render a progress pill */
+	percent?: number;
 };
 
 export default function StatCard({
@@ -31,6 +34,8 @@ export default function StatCard({
 	ctaHref,
 	iconName,
 	className = '',
+	showCta = true,
+	percent,
 }: StatCardProps) {
 
 	const renderIcon = (key?: string) => {
@@ -99,11 +104,26 @@ export default function StatCard({
 						{smallValue ? (
 							<>
 								<div className="flex-none text-xs text-gray-400">{smallLabel}</div>
-								<div className="flex-1">
-									<div className="inline-flex w-full items-center justify-center rounded-full text-xs leading-none whitespace-nowrap px-4 py-2 text-green-700 border border-green-600 bg-green-50">
-										{smallValue}
+								{typeof percent === 'number' ? (
+									<div className="flex-1 flex items-center gap-3">
+										{/* left: small value capsule (equal width) */}
+										<div className="flex-1 flex items-center justify-center">
+											<div className="inline-flex items-center justify-center w-full rounded-full text-xs leading-none whitespace-nowrap px-4 py-2 text-green-700 border border-green-600 bg-green-50">
+												{smallValue}
+											</div>
+										</div>
+										{/* right: percent progress pill (equal width) */}
+										<div className="flex-1">
+											<ProgressPill percent={typeof percent === 'number' ? percent : 0} />
+										</div>
 									</div>
-								</div>
+							) : (
+									<div className="flex-1">
+										<div className="inline-flex w-full items-center justify-center rounded-full text-xs leading-none whitespace-nowrap px-4 py-2 text-green-700 border border-green-600 bg-green-50">
+											{smallValue}
+										</div>
+									</div>
+								)}
 							</>
 						) : (
 							<>
@@ -119,15 +139,17 @@ export default function StatCard({
 						</div>
 					</div>
 
-				<div className="mx-auto max-w-xs">
-					{ctaHref ? (
-						<Link href={ctaHref} className="inline-block w-full">
+				{showCta && (
+					<div className="mx-auto max-w-xs">
+						{ctaHref ? (
+							<Link href={ctaHref} className="inline-block w-full">
+								<Button variant="primary" className="w-full py-3 rounded-full">{ctaLabel}</Button>
+							</Link>
+						) : (
 							<Button variant="primary" className="w-full py-3 rounded-full">{ctaLabel}</Button>
-						</Link>
-					) : (
-						<Button variant="primary" className="w-full py-3 rounded-full">{ctaLabel}</Button>
-					)}
-				</div>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

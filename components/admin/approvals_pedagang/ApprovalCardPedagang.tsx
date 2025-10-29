@@ -2,7 +2,7 @@
 
 import React from "react";
 import ApprovalTablePedagang from "./ApprovalTablePedagang";
-import Button from "../../ui/Button";
+import Button from "../../ui/button/Button";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 
 export default function ApprovalCardPedagang() {

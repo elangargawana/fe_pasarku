@@ -6,10 +6,15 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   ColumnDef,
+  Header,
+  Row as TableRow,
+  Cell as TableCell,
 } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 
+// Allow any for ColumnDef because accessor return types vary across callers.
 type Props<T> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<T, any>[];
   data: T[];
   gridTemplate?: string;
@@ -46,9 +51,7 @@ export default function ReusableTable<T extends object>({
 
   return (
     <div className="w-full">
-      {/* ✅ Scroll container diperbaiki */}
       <div className="w-full overflow-x-auto rounded-md border border-green-200">
-        {/* ✅ Tambahkan min-width agar tabel tidak terpotong */}
         <div
           className="min-w-[700px] sm:min-w-full"
           style={{ display: "grid", gridTemplateColumns: "1fr" }}
@@ -59,7 +62,7 @@ export default function ReusableTable<T extends object>({
               className="grid gap-4 items-center px-3 py-3"
               style={{ gridTemplateColumns: gridTemplate }}
             >
-              {table.getHeaderGroups()[0].headers.map((h: any) => (
+              {table.getHeaderGroups()[0].headers.map((h: Header<T, unknown>) => (
                 <div key={h.id} className="text-center whitespace-nowrap">
                   {flexRender(h.column.columnDef.header, h.getContext())}
                 </div>
@@ -69,29 +72,37 @@ export default function ReusableTable<T extends object>({
 
           {/* Body */}
           <div className="bg-green-50 min-w-max">
-            {table.getRowModel().rows.length === 0 ? (
+              {table.getRowModel().rows.length === 0 ? (
               <div className="p-6 text-center text-sm text-gray-600">
                 Tidak ada data.
               </div>
             ) : (
-              table.getRowModel().rows.map((row: any) => (
+              table.getRowModel().rows.map((row: TableRow<T>) => (
                 <div
                   key={row.id}
-                  className="grid items-center gap-4 px-4 py-5 border-t border-green-100"
+                  className="grid items-center gap-4 px-3 py-5 border-t border-green-100"
                   style={{ gridTemplateColumns: gridTemplate }}
                 >
-                  {row.getVisibleCells().map((cell: any) => (
-                    <div
-                      key={cell.id}
-                      className={`flex items-center ${
-                        cell.column.id === "name"
-                          ? "justify-start pl-2"
-                          : "justify-center"
-                      } whitespace-nowrap`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </div>
-                  ))}
+                  {row.getVisibleCells().map((cell: TableCell<T, unknown>) => {
+                    // Tentukan alignment otomatis
+                    const align = (cell.column.columnDef.meta as Record<string, unknown>)?.align || "center";
+
+                    const justifyClass =
+                      align === "start"
+                        ? "justify-start pl-2"
+                        : align === "end"
+                        ? "justify-end pr-2"
+                        : "justify-center";
+
+                    return (
+                      <div
+                        key={cell.id}
+                        className={`flex items-center ${justifyClass} whitespace-nowrap`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
+                    );
+                  })}
                 </div>
               ))
             )}
@@ -99,7 +110,7 @@ export default function ReusableTable<T extends object>({
         </div>
       </div>
 
-      {/* Pagination (optional) */}
+      {/* Pagination */}
       {!hidePagination && (
         <div className="mt-4 px-4 py-3 bg-green-50 flex flex-col sm:flex-row items-center sm:justify-between text-sm text-gray-600 gap-3">
           <div className="flex items-center gap-3 flex-wrap">

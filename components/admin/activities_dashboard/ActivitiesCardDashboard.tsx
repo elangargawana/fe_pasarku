@@ -1,7 +1,5 @@
-"use client";
-
 import React from "react";
-import ActivitiesTable from "./ActivitiesTable";
+import ActivitiesTable from "./ActivitiesTableDashboard";
 
 type Props = {
   title?: string;

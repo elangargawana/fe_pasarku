@@ -1,9 +1,9 @@
 import StatCard from '../../../components/ui/StatCard';
 import ActionCard from '../../../components/ui/ActionCard';
-import ApprovalCardDashboard from '../../../components/admin/approvalsdashboard/ApprovalCardDashboard';
+import ApprovalCardDashboard from '../../../components/admin/approvals_dashboard/ApprovalCardDashboard';
 import LowStockCard from '../../../components/admin/stock/LowStockCard';
 import TransactionsChart from '../../../components/admin/charts/TransactionsChart';
-import ActivitiesCard from '../../../components/admin/activities/ActivitiesCard';
+import ActivitiesCard from '../../../components/admin/activities_dashboard/ActivitiesCard';
 
 export default function DashboardPage() {
 	return (

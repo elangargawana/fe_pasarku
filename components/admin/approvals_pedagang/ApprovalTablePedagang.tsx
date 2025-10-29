@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
+import Image from "next/image";
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table";
 import ReusableTable from "../../ui/ReusableTable";
-import IconButton from "../../ui/IconButton";
+import IconButton from "../../ui/button/IconButton";
 import ViewDetailModal from "./ViewDetailModal";
 
 type Row = {
@@ -101,19 +102,20 @@ const defaultRows: Row[] = [
 ];
 
 export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionChange, statusFilter, clearSelectionSignal, }: { rows?: Row[]; onSelectionChange?: (ids: Set<string | number>, hasActiveSelected?: boolean) => void; statusFilter?: "Aktif" | "Pending" | null; clearSelectionSignal?: number; }) {
-  const columnHelper = createColumnHelper<Row>();
+  const columnHelper = useMemo(() => createColumnHelper<Row>(), []);
   const [selectedIds, setSelectedIds] = useState<Set<string | number>>(new Set());
   const [viewRow, setViewRow] = useState<Row | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const displayRows = statusFilter ? rows.filter((r) => r.status === statusFilter) : rows;
+  const displayRows = useMemo(() => (statusFilter ? rows.filter((r) => r.status === statusFilter) : rows), [rows, statusFilter]);
 
   // toggle all selection (apply only to visible/displayed rows)
-  const allSelected = displayRows.length > 0 && selectedIds.size === displayRows.length;
-  const toggleAll = () => {
-    if (allSelected) setSelectedIds(new Set());
-    else setSelectedIds(new Set(displayRows.map((r) => r.id)));
-  };
+  const toggleAll = useCallback(() => {
+    setSelectedIds((prev) => {
+      if (prev.size === displayRows.length) return new Set();
+      return new Set(displayRows.map((r) => r.id));
+    });
+  }, [displayRows]);
 
   // notify parent when selection changes
   React.useEffect(() => {
@@ -127,12 +129,14 @@ export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionC
     }
   }, [selectedIds, onSelectionChange, rows]);
 
-  const toggleRow = (id: string | number) => {
-    const newSet = new Set(selectedIds);
-    if (newSet.has(id)) newSet.delete(id);
-    else newSet.add(id);
-    setSelectedIds(newSet);
-  };
+  const toggleRow = useCallback((id: string | number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   // respond to clearSelectionSignal from parent: when it changes, clear selectedIds
   React.useEffect(() => {
@@ -147,6 +151,9 @@ export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionC
     setSelectedIds(new Set());
   }, [statusFilter]);
 
+  // types from tanstack can be verbose here; allow `any` for column value because
+  // columns can reference mixed types (string | number | undefined) across fields.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns: ColumnDef<Row, any>[] = useMemo(
     () => [
       // ✅ Kolom Checkbox + header toggle
@@ -156,7 +163,7 @@ export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionC
           <div className="flex items-center justify-center px-4">
             <input
               type="checkbox"
-              checked={allSelected}
+              checked={displayRows.length > 0 && selectedIds.size === displayRows.length}
               onChange={toggleAll}
               className="w-4 h-4 text-green-600 rounded cursor-pointer"
             />
@@ -180,9 +187,11 @@ export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionC
         header: "Foto",
         cell: (ctx) => (
           <div className="flex items-center justify-center px-4">
-            <img
+            <Image
               src={String(ctx.row.original.photo)}
               alt={String(ctx.row.original.name)}
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-md object-cover"
             />
           </div>
@@ -320,7 +329,7 @@ export default function ApprovalTablePedagang({ rows = defaultRows, onSelectionC
         },
       }),
     ],
-    [selectedIds, allSelected]
+    [selectedIds, displayRows, columnHelper, toggleAll, toggleRow, setModalOpen, setViewRow]
   );
 
   const gridTemplate =

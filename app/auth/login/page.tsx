@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Headbar from "../../../components/Headbar";
-import Button from "../../../components/ui/Button";
+import Button from "../../../components/ui/button/Button";
 
 export default function LoginPage() {
 	const router = useRouter();
